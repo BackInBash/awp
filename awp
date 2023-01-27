@@ -27,12 +27,15 @@ def get_ip_spaces():
 def get_ip_rules():
     ips = get_ip_spaces()
     rules = ""
-    with open('v4.rule', 'w') as f:
-        f.write(":INPUT DROP\n")
+    with open('v4.rule', 'w') as f4, open('v6.rule', 'w') as f6:
+        f4.write(":INPUT DROP\n")
+        f6.write(":INPUT DROP\n")
         for ip in ips:
             # IPv6 Check
             if ":" not in ip:
-                f.write(("-A INPUT -s {0} -j ACCEPT\n").format(str(ip)))
+                f4.write(("-A INPUT -s {0} -j ACCEPT\n").format(str(ip)))
+            else:
+                f6.write(("-A INPUT -s {0} -j ACCEPT\n").format(str(ip)))
     print(rules)
 
 get_ip_rules()
