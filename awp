@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+
+import requests
+import json
+
+ROOT_URL="https://asn.ipinfo.app/api/text/list/"
+
+def load_asns():
+    with open('asn.json', 'r') as f:
+        return json.load(f)
+
+
+def add_asn(json_file):
+    with open('asn.json', 'w') as f:
+        json.dump(f, json_file, indent = 4, sort_keys=True)
+    f.close()
+
+def get_ip_spaces():
+    asns = load_asns()
+    ips = []
+    for asn in asns:
+        for ip in str(requests.get(ROOT_URL+asn).text).splitlines():
+            ips.append(ip)
+    return ips
+
+
+def get_ip_rules():
+    ips = get_ip_spaces()
+    rules = ""
+    with open('v4.rule', 'w') as f:
+        f.write(":INPUT DROP\n")
+        for ip in ips:
+            # IPv6 Check
+            if ":" not in ip:
+                f.write(("-A INPUT -s {0} -j ACCEPT\n").format(str(ip)))
+    print(rules)
+
+get_ip_rules()
