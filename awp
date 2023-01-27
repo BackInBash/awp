@@ -36,6 +36,8 @@ def get_ip_rules():
                 f4.write(("-A INPUT -s {0} -j ACCEPT\n").format(str(ip)))
             else:
                 f6.write(("-A INPUT -s {0} -j ACCEPT\n").format(str(ip)))
+        f4.close()
+        f6.close()
     print(rules)
 
 get_ip_rules()
