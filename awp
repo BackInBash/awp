@@ -28,14 +28,18 @@ def get_ip_rules():
     ips = get_ip_spaces()
     rules = ""
     with open('v4.rule', 'w') as f4, open('v6.rule', 'w') as f6:
-        f4.write(":INPUT DROP\n")
-        f6.write(":INPUT DROP\n")
+        f4.write("*filter\n:INPUT DROP [0:0]\n:FORWARD ACCEPT [0:0]\n:OUTPUT ACCEPT [0:0]\n")
+        f6.write("*filter\n:INPUT DROP [0:0]\n:FORWARD ACCEPT [0:0]\n:OUTPUT ACCEPT [0:0]\n")
+        f4.write("-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n")
+        f6.write("-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n")
         for ip in ips:
             # IPv6 Check
             if ":" not in ip:
                 f4.write(("-A INPUT -s {0} -j ACCEPT\n").format(str(ip)))
             else:
                 f6.write(("-A INPUT -s {0} -j ACCEPT\n").format(str(ip)))
+        f4.write("COMMIT")
+        f6.write("COMMIT")
         f4.close()
         f6.close()
     print(rules)
