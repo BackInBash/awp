@@ -31,7 +31,10 @@ def get_ip_rules():
         f4.write("*filter\n:INPUT DROP [0:0]\n:FORWARD ACCEPT [0:0]\n:OUTPUT ACCEPT [0:0]\n")
         f6.write("*filter\n:INPUT DROP [0:0]\n:FORWARD ACCEPT [0:0]\n:OUTPUT ACCEPT [0:0]\n")
         f4.write("-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n")
+        f4.write("-A INPUT -i lo -j ACCEPT\n")
         f6.write("-A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT\n")
+        f6.write("-A INPUT -i lo -j ACCEPT\n")
+        
         for ip in ips:
             # IPv6 Check
             if ":" not in ip:
